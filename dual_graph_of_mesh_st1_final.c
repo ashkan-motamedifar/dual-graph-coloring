@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include"lib/hashmap.h"
+#include "./lib/hashmap.h"
 #include <time.h> 
 #define INF 99999
 #define INTMAX 99999
