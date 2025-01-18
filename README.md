@@ -122,20 +122,9 @@ This command will:
 
 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 MIT License Summary:
 
 The MIT License is a permissive free software license that allows you to do anything with the software, such as modifying, distributing, or using it in proprietary software, as long as you include the original copyright notice and disclaimers in any derivative works.
-
----
-
-### How to Use This:
-
-1. **Copy and Paste**: You can copy the above Markdown content and paste it directly into your `README.md` file in your project directory.
-2. **License Section**: The **MIT License** section includes the standard text. If you use a different license, replace the content in the **License** section with your chosen license details.
-3. **Push the Changes**: After you update the `README.md`, add, commit, and push the file to your GitHub repository:
-   ```bash
-   git add README.md
-   git commit -m "Add complete README.md with installation, usage, and license"
-   git push origin main
