@@ -58,6 +58,84 @@ To visually represent the dual graph and the shortest distances between nodes, *
 
 To install and run this project locally, follow these steps:
 
-1. Clone the repository:
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/ashkan-motamedifar/graph-dual-transformation.git
+
+	2.	Navigate to the project directory:
+After cloning, change to the project directory:
+
+cd graph-dual-transformation
+
+
+	3.	Install dependencies:
+If you’re using any external libraries (such as SDL2 for graphical output), make sure they’re installed. For example, to install SDL2 (if you’re using it for graphical mode):
+On macOS (using Homebrew):
+
+brew install sdl2
+
+On Ubuntu:
+
+sudo apt-get install libsdl2-dev
+
+Note: If your project doesn’t depend on any external libraries, you can skip this step.
+
+	4.	Compile the project:
+The project uses gcc for compilation. You can compile it with the following command:
+
+gcc -o graph_dual main.c -lm
+
+	•	The -o graph_dual specifies the name of the output executable file.
+	•	The -lm links the math library in case you use any mathematical functions.
+
+	5.	Run the project:
+After compilation, you can run the program in one of the following modes:
+	•	Console Mode:
+
+./graph_dual --console
+
+
+	•	Graphical Mode (SDL2):
+
+./graph_dual --sdl2
+
+
+The program will process the mesh, generate the dual graph, sort edges, and color the graph based on Dijkstra’s algorithm.
+
+Usage
+
+Once the project is compiled, you can execute the program by passing the necessary parameters. The program requires:
+	1.	Input file: A .obj mesh file to be used as input (containing vertices and facets).
+	2.	Output file: A .obj file for the output dual graph.
+	3.	Algorithm choice: Choose an edge sorting algorithm (selectionsort, heapsort, avltree, or hashtable).
+	4.	Graph coloring: Specify whether to color the graph or not (y for yes, n for no).
+
+Example usage:
+
+./graph_dual input.obj output.obj avltree y
+
+This command will:
+	•	Use the input.obj file.
+	•	Generate the dual graph and store it in output.obj.
+	•	Use the avltree algorithm for sorting the edges.
+	•	Color the dual graph based on the shortest distances.
+
+License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+MIT License Summary:
+
+The MIT License is a permissive free software license that allows you to do anything with the software, such as modifying, distributing, or using it in proprietary software, as long as you include the original copyright notice and disclaimers in any derivative works.
+
+---
+
+### How to Use This:
+
+1. **Copy and Paste**: You can copy the above Markdown content and paste it directly into your `README.md` file in your project directory.
+2. **License Section**: The **MIT License** section includes the standard text. If you use a different license, replace the content in the **License** section with your chosen license details.
+3. **Push the Changes**: After you update the `README.md`, add, commit, and push the file to your GitHub repository:
+   ```bash
+   git add README.md
+   git commit -m "Add complete README.md with installation, usage, and license"
+   git push origin main
