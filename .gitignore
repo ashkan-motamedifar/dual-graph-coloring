@@ -8,3 +8,5 @@
 *.exe
 *.obj
 *.dSYM/
+# ignore generated OBJ outputs
+assets/meshes/out_*.obj
