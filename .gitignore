@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# R
+.Rhistory
+
+# Build artifacts
+*.exe
+*.obj
+*.dSYM/
