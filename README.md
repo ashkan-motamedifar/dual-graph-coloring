@@ -1,130 +1,243 @@
-# Graph Dual Transformation
+# Mesh → Dual Graph Transformation
 
-This project focuses on transforming a mesh into a dual graph. The transformation involves calculating centroids for each face in the mesh and connecting these centroids to form the edges of the dual graph. The project also evaluates various edge sorting algorithms, including selection sort, heap sort, AVL trees, and hash tables, to identify adjacent faces efficiently. The final step involves applying **Dijkstra's algorithm** to color the graph based on the shortest distances between nodes.
+> A high-performance C implementation for converting 3D triangular meshes into their dual graph representation, with a comparative study of four edge-sorting algorithms and Dijkstra-based graph coloring.
+
+---
+
+## Overview
+
+This project implements a full pipeline for transforming a 3D triangular mesh (`.obj` format) into its **dual graph**: a graph where each face of the original mesh becomes a node, and two nodes are connected if their corresponding faces share an edge.
+
+The pipeline benchmarks four classical data structures and sorting strategies — **Selection Sort**, **Heap Sort**, **AVL Trees**, and **Hash Tables** — to identify adjacent faces efficiently. Once the dual graph is built, **Dijkstra's shortest-path algorithm** is applied to compute distances from a source node, and the result is written as a smooth RGB color gradient for intuitive visual inspection.
+
+> 📄 Full technical report: [`docs/Rapport.pdf`](docs/Rapport.pdf)
+
+---
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Key Concepts](#key-concepts)
-- [Project Workflow](#project-workflow)
+- [Core Concepts](#core-concepts)
+- [Pipeline](#pipeline)
 - [Algorithms](#algorithms)
-  - [Edge Sorting Algorithms](#edge-sorting-algorithms)
-  - [Graph Coloring](#graph-coloring)
-- [Installation](#installation)
+- [Mesh Gallery](#mesh-gallery)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
 - [Usage](#usage)
+- [Performance](#performance)
 - [License](#license)
 
-## Introduction
+---
 
-The project aims to demonstrate the process of transforming a mesh into a dual graph. It introduces key concepts like centroid calculation, edge formation, and graph coloring, all essential in understanding graph theory and mesh processing. The goal is to create an efficient method for generating and visualizing a dual graph based on a given mesh structure.
+## Core Concepts
 
-## Key Concepts
+**Dual Graph of a Mesh**
 
-- **Mesh to Dual Graph Transformation**: The process of converting a 3D mesh into a dual graph by calculating centroids of mesh faces and connecting them based on adjacency.
-- **Centroids**: A point that represents the average position of all vertices of a face in the mesh.
-- **Graph Dual**: A graph formed by placing a vertex at the centroid of each face of the mesh and connecting vertices if the faces share an edge.
-- **Graph Coloring**: Using an algorithm like Dijkstra’s to assign colors to nodes based on their shortest distance from a start node.
+Given a triangulated 3D mesh, the dual graph *G\** is constructed by placing one node at the centroid of each triangular face, then connecting two nodes with an edge if and only if their corresponding faces share a mesh edge. This representation is fundamental in computational geometry, mesh analysis, and computer graphics.
 
-## Project Workflow
+**Centroid Calculation**
 
-1. **Mesh to Dual Graph Transformation**:
-   - Calculate the centroid for each face in the mesh.
-   - Form edges in the dual graph by connecting centroids of adjacent faces.
+Each dual node is positioned at the arithmetic mean of its face's three vertex coordinates:
 
-2. **Edge Sorting to Find Adjacent Faces**:
-   - Sort the edges of the mesh using various algorithms (Selection Sort, Heap Sort, AVL Tree, Hash Table).
-   - Use sorted edges to identify adjacent faces and form the dual graph.
+```
+C = (V₀ + V₁ + V₂) / 3
+```
 
-3. **Graph Coloring with Dijkstra's Algorithm**:
-   - Apply Dijkstra's algorithm to calculate the shortest distance between nodes in the dual graph.
-   - Color the graph based on the distances, enhancing visual clarity and understanding of the graph’s structure.
+**Graph Coloring via Dijkstra**
+
+Once the dual graph is built, Dijkstra's algorithm computes the shortest hop-distance from a chosen source node to every other node. Nodes are then assigned an RGB color interpolated smoothly from the minimum to the maximum distance, producing a heatmap-style visualization that makes the graph's topology immediately readable.
+
+---
+
+## Pipeline
+
+```
+Input .obj mesh
+       │
+       ▼
+  Parse vertices & faces
+       │
+       ▼
+  Extract all mesh edges           ┌───────────────────────┐
+  (+ reverse counterparts)  ──────►│  Sort edges using one  │
+                                   │  of four strategies:   │
+                                   │  · Selection Sort      │
+                                   │  · Heap Sort           │
+                                   │  · AVL Tree            │
+                                   │  · Hash Table          │
+                                   └──────────┬────────────┘
+                                              │
+                                              ▼
+                              Identify shared edges → adjacency list
+                                              │
+                                              ▼
+                              Compute face centroids → dual vertices
+                                              │
+                                              ▼
+                              Run Dijkstra from source node
+                                              │
+                                              ▼
+                              Assign RGB colors by hop-distance
+                                              │
+                                              ▼
+                              Write output .obj with vertex colors
+```
+
+---
 
 ## Algorithms
 
-### Edge Sorting Algorithms
+### Edge Sorting Strategies
 
-The project compares four edge sorting algorithms to efficiently identify adjacent faces:
+To identify adjacent faces, all mesh edges (including their reverse counterparts) are sorted so that matching edges between two faces can be detected efficiently. Four strategies are compared:
 
-1. **Selection Sort**: A simple algorithm with O(n²) complexity.
-2. **Heap Sort**: An optimized algorithm with O(n log n) complexity.
-3. **AVL Trees**: Self-balancing binary search trees that offer efficient sorting with O(log n) complexity.
-4. **Hash Tables**: Use a hash function for O(1) average time complexity in edge sorting.
+| Algorithm | Time Complexity | Space | Notes |
+|-----------|:--------------:|:-----:|-------|
+| **Selection Sort** | O(n²) | O(1) | Simple baseline; impractical for large meshes |
+| **Heap Sort** | O(n log n) | O(1) | In-place; good cache behavior on medium meshes |
+| **AVL Tree** | O(n log n) | O(n) | Self-balancing BST; in-order traversal yields sorted edges |
+| **Hash Table** | O(n) avg | O(n) | Best asymptotic performance; adjacency via direct key lookup |
 
-### Graph Coloring
+### Dijkstra's Algorithm
 
-To visually represent the dual graph and the shortest distances between nodes, **Dijkstra’s algorithm** is used for graph coloring. The algorithm computes the shortest path from a source node to all other nodes in the graph, and nodes are colored based on their distance from the source.
+Runs on the dual graph (unweighted — each shared edge has cost 1) to compute the shortest hop-distances from a user-chosen source node. Results are stored as per-vertex RGB values in the output `.obj`, enabling direct visualization in any mesh viewer (MeshLab, Blender, etc.).
 
-## Installation
+---
 
-To install and run this project locally, follow these steps:
+## Mesh Gallery
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/ashkan-motamedifar/graph-dual-transformation.git
+The meshes below are included in `assets/meshes/`. GitHub renders `.obj` files as interactive 3D viewers — click any link to explore the model directly in your browser.
 
-	2.	Navigate to the project directory:
-After cloning, change to the project directory:
+> **Input meshes** (original geometry):
 
+| Mesh | Faces | Interactive View |
+|------|:-----:|:----------------:|
+| Tetrahedron | 4 | [View 3D](assets/meshes/tetrahedron.obj) |
+| Octahedron | 8 | [View 3D](assets/meshes/octahedron.obj) |
+| Dodecahedron | 12 | [View 3D](assets/meshes/dodecahedron.obj) |
+| Pumpkin | — | [View 3D](assets/meshes/pumpkin.obj) |
+| Cow | ~5k | [View 3D](assets/meshes/cow.obj) |
+| Humanoid | — | [View 3D](assets/meshes/humanoid_tri.obj) |
+| Stanford Bunny (10k) | 10 000 | [View 3D](assets/meshes/bunny10k.obj) |
+
+> **Output dual graphs** (generated by this program):
+
+| Dual Graph | Interactive View |
+|------------|:----------------:|
+| Tetrahedron dual | [View 3D](assets/meshes/out_tetrahedron.obj) |
+| Octahedron dual | [View 3D](assets/meshes/out_octahedron.obj) |
+| Dodecahedron dual | [View 3D](assets/meshes/out_dodecahedron.obj) |
+| Pumpkin dual | [View 3D](assets/meshes/out_pumpkin.obj) |
+| Cow dual | [View 3D](assets/meshes/out_cow.obj) |
+| Humanoid dual | [View 3D](assets/meshes/out_humanoid_tri.obj) |
+| Bunny dual | [View 3D](assets/meshes/out_bunny10k.obj) |
+
+> 💡 **Tip:** Add screenshots of your renders (from MeshLab, Blender, or the SDL2 output) to `docs/images/` to enrich this section further.
+
+---
+
+## Project Structure
+
+```
+.
+├── assets/
+│   └── meshes/                           # Input and output .obj meshes
+│       ├── tetrahedron.obj
+│       ├── octahedron.obj
+│       ├── dodecahedron.obj
+│       ├── pumpkin.obj
+│       ├── cow.obj
+│       ├── humanoid_tri.obj
+│       ├── bunny10k.obj
+│       └── out_*.obj                     # Generated dual graphs
+├── docs/
+│   └── Rapport.pdf                       # Full technical report
+├── src/
+│   ├── dual_graph_of_mesh_st1_final.c    # Main source (parser, algorithms, Dijkstra, writer)
+│   └── vendor/
+│       └── hashmap.h                     # Hash map implementation
+├── Makefile
+├── LICENSE
+└── README.md
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- GCC (C99 or later) — `gcc --version`
+- GNU Make — `make --version`
+
+No external libraries are required for the core pipeline.
+
+### Build
+
+```bash
+git clone https://github.com/ashkan-motamedifar/graph-dual-transformation.git
 cd graph-dual-transformation
+make build
+```
 
+This compiles `src/dual_graph_of_mesh_st1_final.c` with `-Wall -g` and produces the `exefile` binary.
 
-	3.	Install dependencies:
-If you’re using any external libraries (such as SDL2 for graphical output), make sure they’re installed. For example, to install SDL2 (if you’re using it for graphical mode):
-On macOS (using Homebrew):
+```bash
+make clean   # remove compiled binary
+```
 
-brew install sdl2
+---
 
-On Ubuntu:
+## Usage
 
-sudo apt-get install libsdl2-dev
+```
+./exefile <input.obj> <output.obj> <algorithm> <color>
+```
 
-Note: If your project doesn’t depend on any external libraries, you can skip this step.
+| Argument | Accepted values | Description |
+|----------|----------------|-------------|
+| `input.obj` | any path | Input triangular mesh in Wavefront OBJ format |
+| `output.obj` | any path | Output dual graph in OBJ format (vertex colors included) |
+| `algorithm` | `selectionsort` · `heapsort` · `avltree` · `hashtable` | Edge-sorting strategy |
+| `color` | `y` · `n` | Apply Dijkstra-based RGB coloring to the output |
 
-	4.	Compile the project:
-The project uses gcc for compilation. You can compile it with the following command:
+### Examples
 
-gcc -o graph_dual main.c -lm
+```bash
+# Tetrahedron — AVL tree, with coloring
+./exefile assets/meshes/tetrahedron.obj out_tetrahedron.obj avltree y
 
-	•	The -o graph_dual specifies the name of the output executable file.
-	•	The -lm links the math library in case you use any mathematical functions.
+# Stanford Bunny (10k faces) — Hash table, no coloring
+./exefile assets/meshes/bunny10k.obj out_bunny.obj hashtable n
 
-	5.	Run the project:
-After compilation, you can run the program in one of the following modes:
-	•	Console Mode:
+# Cow mesh — Heap sort, with coloring
+./exefile assets/meshes/cow.obj out_cow.obj heapsort y
+```
 
-./graph_dual --console
+Or use Make to build and run the default configuration in one step:
 
+```bash
+make
+```
 
-	•	Graphical Mode (SDL2):
+---
 
-./graph_dual --sdl2
+## Performance
 
+The four sorting strategies are evaluated on meshes of increasing complexity. As expected, the hash-table approach dominates on large meshes (O(n) average), while selection sort becomes prohibitively slow beyond a few thousand faces.
 
-The program will process the mesh, generate the dual graph, sort edges, and color the graph based on Dijkstra’s algorithm.
+| Mesh | Faces | Selection Sort | Heap Sort | AVL Tree | Hash Table |
+|------|:-----:|:--------------:|:---------:|:--------:|:----------:|
+| Tetrahedron | 4 | ✅ fast | ✅ fast | ✅ fast | ✅ fast |
+| Dodecahedron | 12 | ✅ fast | ✅ fast | ✅ fast | ✅ fast |
+| Cow | ~5k | 🟡 slow | ✅ | ✅ | ✅ fastest |
+| Bunny | 10k | 🔴 very slow | ✅ | ✅ | ✅ fastest |
 
-Usage
+> Full benchmark results and algorithmic analysis are available in [`docs/Rapport.pdf`](docs/Rapport.pdf).
 
-Once the project is compiled, you can execute the program by passing the necessary parameters. The program requires:
-	1.	Input file: A .obj mesh file to be used as input (containing vertices and facets).
-	2.	Output file: A .obj file for the output dual graph.
-	3.	Algorithm choice: Choose an edge sorting algorithm (selectionsort, heapsort, avltree, or hashtable).
-	4.	Graph coloring: Specify whether to color the graph or not (y for yes, n for no).
+---
 
-Example usage:
+## License
 
-./graph_dual input.obj output.obj avltree y
+This project is licensed under the **MIT License** — see [`LICENSE`](LICENSE) for full details.
 
-This command will:
-	•	Use the input.obj file.
-	•	Generate the dual graph and store it in output.obj.
-	•	Use the avltree algorithm for sorting the edges.
-	•	Color the dual graph based on the shortest distances.
-
-License
-
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
-MIT License Summary:
-
-The MIT License is a permissive free software license that allows you to do anything with the software, such as modifying, distributing, or using it in proprietary software, as long as you include the original copyright notice and disclaimers in any derivative works.
+You are free to use, modify, and distribute this software for any purpose, provided the original copyright notice and this license are retained in all copies or derivative works.
