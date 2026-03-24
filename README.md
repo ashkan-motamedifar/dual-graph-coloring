@@ -2,7 +2,7 @@
 
 A C implementation that converts a 3D triangular mesh into its **dual graph**, with a comparative study of four edge-sorting algorithms and Dijkstra-based graph coloring.
 
-📄 Full technical report: [`docs/Rapport.pdf`](docs/Rapport.pdf)
+📄 Full technical report: [`docs/report.pdf`](docs/report.pdf)
 
 ---
 
@@ -28,7 +28,7 @@ Four edge-sorting strategies are benchmarked for finding adjacent faces:
 | AVL Tree | O(n log n) | Self-balancing BST, in-order traversal gives sorted edges |
 | Hash Table | O(n) avg | Fastest on large meshes |
 
-Full benchmark results are in [`docs/Rapport.pdf`](docs/Rapport.pdf).
+Full benchmark results are in [`docs/report.pdf`](docs/report.pdf).
 
 ---
 

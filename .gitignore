@@ -5,8 +5,10 @@
 .Rhistory
 
 # Build artifacts
+exefile
 *.exe
-*.obj
 *.dSYM/
-# ignore generated OBJ outputs
+.gitignore.save
+
+# Generated mesh outputs
 assets/meshes/out_*.obj
