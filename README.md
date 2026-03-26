@@ -29,13 +29,6 @@ Each pair shows the original mesh (left) and its Dijkstra-colored dual graph (ri
 |:----:|:----------:|
 | ![](docs/images/brain_v2.png) | ![](docs/images/dual_brain_v2.png) |
 
-**Other test meshes**
-
-| Mesh | Dual Graph |
-|:----:|:----------:|
-| ![](docs/images/humanoid.png) | ![](docs/images/out_humanoid.png) |
-| ![](docs/images/bunny.png) | ![](docs/images/out_bunny.png) |
-
 ---
 
 ## Algorithms
