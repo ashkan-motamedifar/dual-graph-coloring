@@ -23,11 +23,11 @@ Given a triangular mesh in `.obj` format, the program:
 
 Each pair shows the original mesh (left) and its Dijkstra-colored dual graph (right). Node color encodes hop-distance from the source — green (close) → red (far).
 
-**Brain cortical surface** (synthetic, 20 480 faces)
+**Brain cortical surface** (real MRI-derived, DKT Atlas, FreeSurfer, 631k faces)
 
 | Mesh | Dual Graph |
 |:----:|:----------:|
-| ![](docs/images/brain.png) | ![](docs/images/out_brain.png) |
+| ![](docs/images/brain_v2.png) | ![](docs/images/dual_brain_v2.png) |
 
 **Other test meshes**
 
