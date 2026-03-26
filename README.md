@@ -27,7 +27,7 @@ Each pair shows the original mesh (left) and its Dijkstra-colored dual graph (ri
 
 | Mesh | Dual Graph |
 |:----:|:----------:|
-| ![](docs/images/brain_v2.png) | ![](docs/images/dual_brain_v2.png) |
+| <img src="docs/images/brain_v2.png" width="400"/> | <img src="docs/images/dual_brain_v2.png" width="400"/> |
 
 ---
 
