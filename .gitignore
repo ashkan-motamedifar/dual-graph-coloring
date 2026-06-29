@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# R
+.Rhistory
+
+# Build artifacts
+exefile
+*.exe
+*.dSYM/
+.gitignore.save
+
+# Generated mesh outputs
+assets/meshes/out_*.obj

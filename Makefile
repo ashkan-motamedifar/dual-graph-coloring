@@ -1,13 +1,23 @@
-all: build execute 
-output:=dual_graph_of_mesh_st1_final.c
-	
-build:
-	gcc $(output) ./lib/hashmap.h -o exefile
-execute:
-	./exefile
+# Compiler and flags
+CC      := gcc
+CFLAGS  := -Wall -g -Isrc/vendor -Isrc/include
 
-.PHONY: clean
+# Directories and files
+SRC_DIR := src
+SRCS    := $(wildcard $(SRC_DIR)/*.c)
+BIN     := exefile
+
+.PHONY: all build run clean
+
+all: build run
+
+build: $(BIN)
+
+$(BIN): $(SRCS)
+	$(CC) $(CFLAGS) $^ -o $@
+
+run: $(BIN)
+	./$(BIN)
 
 clean:
-	del exefile.exe
-
+	$(RM) $(BIN)
